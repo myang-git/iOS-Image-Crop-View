@@ -8,6 +8,7 @@ Screenshot
 ===================
 ![alt text](https://raw.github.com/myang-git/iOS-Image-Crop-View/master/ImageCropViewScreenShot.png)
 
+[Demo Video](https://raw.github.com/myang-git/iOS-Image-Crop-View/master/demo.mov)
 
 How to Use
 ===================
