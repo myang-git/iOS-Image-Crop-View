@@ -12,7 +12,7 @@ Screenshot
 
 How to Use
 ===================
-Very easy! It is created to be a drop-in component, so no static library, no additional dependencies.
+Very easy! It is created to be a drop-in component, so no static library, no extra dependencies.
 Just copy <code>ImageCropView.h</code> and <code>ImageCropView.m</code> to your project, and that's it.
 
 The project comes with a working example (as target ***ImageCropView***) to demostrate the usage. 
