@@ -1,8 +1,8 @@
 iOS-Image-Crop-View
 ===================
 
-A view that allows the user to select a cropping area in an image.
-You can either drag the corner to scale it or move the entire bounding box.
+A view allowing the user to specify a rectangle area in an image. The user can either drag the corner to 
+resize it or move the entire bounding box. The color and size of the dots on the corner can be customized.
 
 Screenshot
 ===================
@@ -13,7 +13,8 @@ Screenshot
 How to Use
 ===================
 Very easy! It is created to be a drop-in component, so no static library, no additional dependencies.
-Just copy <code>ImageCropView.h</code> and <code>ImageCropView.m</code> to your project, and that's it. 
+Just copy <code>ImageCropView.h</code> and <code>ImageCropView.m</code> to your project, and that's it.
+
 The project comes with a working example (as target ***ImageCropView***) to demostrate the usage. 
 
 License
