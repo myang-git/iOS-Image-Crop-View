@@ -1,7 +1,7 @@
 iOS-Image-Crop-View
 ===================
 
-A view allowing the user to specify a rectangle area in an image. The user can either drag the corner to 
+A view allowing user to specify a rectangle area in an image. The user can either drag the corner to 
 resize it or move the entire bounding box. The color and size of the dots on the corner can be customized.
 
 Screenshot
