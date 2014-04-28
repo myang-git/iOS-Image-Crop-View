@@ -74,7 +74,7 @@ static CGFloat const DEFAULT_MASK_ALPHA = 0.75;
 }
 
 - (void)setShadeAlpha:(CGFloat)_alpha {
-    shadeAlpha = cropBorderAlpha;
+    shadeAlpha = _alpha;
     [self setNeedsDisplay];
 }
 
@@ -427,7 +427,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 }
 
 - (void)setControlPointSize:(CGFloat)_controlPointSize {
-    CGFloat halfSize = _controlPointSize / 2;
+    CGFloat halfSize = _controlPointSize;
     CGRect topLeftPointFrame = CGRectMake(topLeftPoint.center.x - halfSize, topLeftPoint.center.y - halfSize, controlPointSize, controlPointSize);
     CGRect bottomLeftPointFrame = CGRectMake(bottomLeftPoint.center.x - halfSize, bottomLeftPoint.center.y - halfSize, controlPointSize, controlPointSize);
     CGRect bottomRightPointFrame = CGRectMake(bottomRightPoint.center.x - halfSize, bottomRightPoint.center.y - halfSize, controlPointSize, controlPointSize);
