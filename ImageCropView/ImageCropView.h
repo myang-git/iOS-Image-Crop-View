@@ -32,6 +32,7 @@
 CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size);
 
 typedef struct {
+    UIView* dragView;
     CGPoint dragStart;
     CGPoint topLeftCenter;
     CGPoint bottomLeftCenter;
@@ -53,7 +54,7 @@ typedef struct {
     ControlPointView* bottomLeftPoint;
     ControlPointView* bottomRightPoint;
     ControlPointView* topRightPoint;
-
+    NSArray *PointsArray;
     UIColor* controlColor;
 
     UIView* cropAreaView;
