@@ -7,7 +7,7 @@
 #import "ImageCropView.h"
 
 static CGFloat const DEFAULT_MASK_ALPHA = 0.75;
-
+static bool const square = NO;
 #pragma mark ControlPointView implementation
 
 @implementation ControlPointView
@@ -272,20 +272,32 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGFloat newX = 0, newY = 0;
     if (xDir>=0) {
         //on the right
+        if(square)
         newX = oppositePoint.x - fabs(size);
-    }
+        else
+        newX = oppositePoint.x - fabs(width);
+     }
     else {
         //on the left
+    if(square )
         newX = oppositePoint.x + fabs(size);
-    }
+    else
+        newX = oppositePoint.x + fabs(width);
+     }
 
     if (yDir>=0) {
         //on the top
+    if(square)
         newY = oppositePoint.y - fabs(size);
-    }
+    else
+        newY = oppositePoint.y - fabs(height);
+      }
     else {
         //on the bottom
+    if(square)
         newY = oppositePoint.y + fabs(size);
+    else
+        newY = oppositePoint.y + fabs(height);
     }
     
     CGSize displacement = CGSizeMake(newX - draggedPoint.x, newY - draggedPoint.y);
