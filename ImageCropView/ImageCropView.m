@@ -8,6 +8,87 @@
 
 static CGFloat const DEFAULT_MASK_ALPHA = 0.75;
 static bool const square = NO;
+
+#pragma mark ImageCropViewController implementation
+
+
+@implementation ImageCropViewController
+
+@synthesize delegate;
+@synthesize cropView;
+@synthesize actionSheet;
+
+-(id)initWithImage:(UIImage*) image{
+   self =  [super init];
+    if (self){
+        self.image = image;
+    }
+    
+    return self;
+}
+
+- (void)loadView
+{
+    [super loadView];
+}
+
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    if (self){
+        UIView *contentView = [[UIView alloc] init];
+        contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        contentView.backgroundColor = [UIColor whiteColor];
+        
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                                 initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                 target:self
+                                                 action:@selector(cancel:)];
+        
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                  target:self
+                                                  action:@selector(done:)];
+        
+        self.cropView  = [[ImageCropView alloc] initWithFrame:self.view.bounds];
+        self.view = contentView;
+        [contentView addSubview:cropView];
+        [cropView setImage:self.image];
+    }
+}
+
+- (IBAction)cancel:(id)sender
+{
+    
+    if ([self.delegate respondsToSelector:@selector(ImageCropViewControllerDidCancel:)])
+    {
+        [self.delegate ImageCropViewControllerDidCancel:self];
+    }
+    
+}
+
+
+- (IBAction)done:(id)sender
+{
+    
+    if ([self.delegate respondsToSelector:@selector(ImageCropViewController:didFinishCroppingImage:)])
+    {
+        UIImage *cropped;
+        if (self.image != nil){
+            CGRect CropRect = self.cropView.cropAreaInImage;
+            [self.image drawInRect:CropRect];
+            CGImageRef imageRef = CGImageCreateWithImageInRect([self.image CGImage], CropRect) ;
+            cropped = [UIImage imageWithCGImage:imageRef];
+            CGImageRelease(imageRef);
+        }
+        [self.delegate ImageCropViewController:self didFinishCroppingImage:cropped];
+    }
+    
+}
+@end
+
+
 #pragma mark ControlPointView implementation
 
 @implementation ControlPointView
@@ -119,7 +200,6 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
         [self initViews];
     }
     return self;
@@ -166,22 +246,14 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     cropAreaView.backgroundColor = [UIColor clearColor];
     UIPanGestureRecognizer* dragRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];
     [self.viewForBaselineLayout addGestureRecognizer:dragRecognizer];
-    [dragRecognizer release];
     
     [self addSubview:imageView];
-    [imageView release];
     [self addSubview:shadeView];
-    [shadeView release];
     [self addSubview:cropAreaView];
-    [cropAreaView release];
     [self addSubview:topRightPoint];
-    [topRightPoint release];
     [self addSubview:bottomRightPoint];
-    [bottomRightPoint release];
     [self addSubview:topLeftPoint];
-    [topLeftPoint release];
     [self addSubview:bottomLeftPoint];
-    [bottomLeftPoint release];
     
     PointsArray = [[NSArray alloc] initWithObjects:topRightPoint, bottomRightPoint, topLeftPoint, bottomLeftPoint, nil];
     [shadeView setCropArea:cropArea];
@@ -238,7 +310,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 }
 - (void)handleDrag:(UIPanGestureRecognizer*)recognizer {
     if (recognizer.state==UIGestureRecognizerStateBegan) {
-        dragPoint.dragView = [self checkHit:[recognizer locationInView:self]];
+        dragView = [self checkHit:[recognizer locationInView:self]];
         dragPoint.dragStart = [recognizer locationInView:self];
         dragPoint.topLeftCenter = topLeftPoint.center;
         dragPoint.bottomLeftCenter = bottomLeftPoint.center;
@@ -249,19 +321,19 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     }
     
     CGPoint location = [recognizer locationInView:self];
-    if (dragPoint.dragView==topLeftPoint) {
+    if (dragView==topLeftPoint) {
         [self handleDragTopLeft:location];
     }
-    else if (dragPoint.dragView==bottomLeftPoint) {
+    else if (dragView==bottomLeftPoint) {
         [self handleDragBottomLeft:location];
     }
-    else if (dragPoint.dragView==bottomRightPoint) {
+    else if (dragView==bottomRightPoint) {
         [self handleDragBottomRight:location];
     }
-    else if (dragPoint.dragView==topRightPoint) {
+    else if (dragView==topRightPoint) {
         [self handleDragTopRight:location];
     }
-    else if (dragPoint.dragView==cropAreaView) {
+    else if (dragView==cropAreaView) {
         [self handleDragClearArea:location];
     }
 
@@ -500,10 +572,13 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     imageFrameInView = CGRectMake(x, y, scaledImageWidth, scaledImageHeight);
     imageView.frame = imageFrameInView;
     imageView.image = image;
-}
-
-- (UIImage*)image {
-    return imageView.image;
+    
+    //Special fix. If scaledImageWidth or scaledImageHeight < clearArea.width of clearArea.Height.
+    [self boundingBoxForTopLeft:topLeftPoint.center bottomLeft:bottomLeftPoint.center bottomRight:bottomRightPoint.center topRight:topRightPoint.center];
+    CGRect clearArea = [self clearAreaFromControlPoints];
+    cropAreaView.frame = clearArea;
+    [shadeView setCropArea:clearArea];
+    
 }
 
 - (UIColor*)controlColor {
