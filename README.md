@@ -13,7 +13,28 @@ Screenshot
 How to Use
 ===================
 Very easy! It is created to be a drop-in component, so no static library, no extra dependencies.
-Just copy <code>ImageCropView.h</code> and <code>ImageCropView.m</code> to your project, and that's it.
+Just copy <code>ImageCropView.h</code> and <code>ImageCropView.m</code> to your project, 
+and implement ImageCropViewControllerDelegate protocol.
+
+Use it like UIImagePicker:
+
+- (void)cropImage:(UIImage *)image{
+	ImageCropViewController *controller = [[ImageCropViewController alloc] initWithImage:image];
+	controller.delegate = self;
+	[[self navigationController] pushViewController:controller animated:YES];
+}
+
+- (void)ImageCropViewController:(ImageCropViewController *)controller didFinishCroppingImage:(UIImage *)croppedImage{
+   image = croppedImage;
+   imageView.image = croppedImage;
+   [[self navigationController] popViewControllerAnimated:YES];
+}
+
+- (void)ImageCropViewControllerDidCancel:(ImageCropViewController *)controller{
+    imageView.image = image;
+    [[self navigationController] popViewControllerAnimated:YES];
+}
+
 
 The project comes with a working example (as target ***ImageCropView***) to demostrate the usage. 
 

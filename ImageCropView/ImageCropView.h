@@ -31,8 +31,8 @@
 
 CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size);
 
+UIView* dragView;
 typedef struct {
-    UIView* dragView;
     CGPoint dragStart;
     CGPoint topLeftCenter;
     CGPoint bottomLeftCenter;
@@ -60,6 +60,7 @@ typedef struct {
     UIView* cropAreaView;
     DragPoint dragPoint;
 }
+-(void)setImage:(UIImage*)image;
 
 @property (nonatomic) CGFloat controlPointSize;
 @property (nonatomic, retain) UIImage* image;
@@ -70,3 +71,28 @@ typedef struct {
 @property (nonatomic, retain) UIColor* controlColor;
 
 @end
+
+#pragma mark ImageCropViewController interface
+@protocol ImageCropViewControllerDelegate <NSObject>
+
+- (void)ImageCropViewController:(UIViewController* )controller didFinishCroppingImage:(UIImage *)croppedImage;
+- (void)ImageCropViewControllerDidCancel:(UIViewController *)controller;
+
+@end
+
+@interface ImageCropViewController : UIViewController  <UIActionSheetDelegate > {
+    ImageCropView * cropView;
+    UIActionSheet * actionSheet;
+}
+@property (nonatomic, weak) id<ImageCropViewControllerDelegate> delegate;
+@property (nonatomic, retain) UIActionSheet * actionSheet;
+@property (nonatomic, retain) UIImage* image;
+@property (nonatomic, retain) ImageCropView* cropView;
+
+- (id)initWithImage:(UIImage*)image;
+- (IBAction)cancel:(id)sender;
+- (IBAction)done:(id)sender;
+
+@end
+
+

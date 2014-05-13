@@ -10,10 +10,15 @@
 #import "ImageCropView.h"
 
 
-@interface ViewController : UIViewController {
+@interface ViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, ImageCropViewControllerDelegate> {
     ImageCropView* imageCropView;
+    UIImage* image;
+    IBOutlet UIImageView *imageView;
 }
 
-@property (nonatomic, retain) IBOutlet ImageCropView* imageCropView;
+- (IBAction)openBarButtonClick:(id)sender;
+- (IBAction)cropBarButtonClick:(id)sender;
+- (IBAction)saveBarButtonClick:(id)sender;
+@property (nonatomic, strong) IBOutlet ImageCropView* imageCropView;
 
 @end

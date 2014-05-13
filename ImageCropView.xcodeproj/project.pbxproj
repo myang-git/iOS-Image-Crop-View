@@ -17,9 +17,8 @@
 		96CFD153168D308D00BAEEE6 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96CFD152168D308D00BAEEE6 /* Default@2x.png */; };
 		96CFD155168D308D00BAEEE6 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96CFD154168D308D00BAEEE6 /* Default-568h@2x.png */; };
 		96CFD158168D308D00BAEEE6 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CFD157168D308D00BAEEE6 /* ViewController.m */; };
-		96CFD15B168D308D00BAEEE6 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96CFD159168D308D00BAEEE6 /* ViewController.xib */; };
 		96CFD163168D309800BAEEE6 /* ImageCropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CFD162168D309800BAEEE6 /* ImageCropView.m */; };
-		96CFD165168D3DFF00BAEEE6 /* pict.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 96CFD164168D3DFF00BAEEE6 /* pict.jpeg */; };
+		CE786DB61910477500800637 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE786DB51910477500800637 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,10 +37,9 @@
 		96CFD154168D308D00BAEEE6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		96CFD156168D308D00BAEEE6 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		96CFD157168D308D00BAEEE6 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		96CFD15A168D308D00BAEEE6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		96CFD161168D309800BAEEE6 /* ImageCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCropView.h; sourceTree = "<group>"; };
 		96CFD162168D309800BAEEE6 /* ImageCropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCropView.m; sourceTree = "<group>"; };
-		96CFD164168D3DFF00BAEEE6 /* pict.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pict.jpeg; sourceTree = "<group>"; };
+		CE786DB51910477500800637 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,8 +87,8 @@
 		96CFD144168D308D00BAEEE6 /* ImageCropView */ = {
 			isa = PBXGroup;
 			children = (
-				96CFD161168D309800BAEEE6 /* ImageCropView.h */,
 				96CFD162168D309800BAEEE6 /* ImageCropView.m */,
+				96CFD161168D309800BAEEE6 /* ImageCropView.h */,
 			);
 			path = ImageCropView;
 			sourceTree = "<group>";
@@ -115,10 +113,9 @@
 				96CFD145168D308D00BAEEE6 /* Supporting Files */,
 				96CFD14D168D308D00BAEEE6 /* AppDelegate.h */,
 				96CFD14E168D308D00BAEEE6 /* AppDelegate.m */,
+				CE786DB51910477500800637 /* Main.storyboard */,
 				96CFD156168D308D00BAEEE6 /* ViewController.h */,
 				96CFD157168D308D00BAEEE6 /* ViewController.m */,
-				96CFD159168D308D00BAEEE6 /* ViewController.xib */,
-				96CFD164168D3DFF00BAEEE6 /* pict.jpeg */,
 			);
 			name = Demo;
 			path = ImageCropView;
@@ -175,11 +172,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				96CFD149168D308D00BAEEE6 /* InfoPlist.strings in Resources */,
+				CE786DB61910477500800637 /* Main.storyboard in Resources */,
 				96CFD151168D308D00BAEEE6 /* Default.png in Resources */,
 				96CFD153168D308D00BAEEE6 /* Default@2x.png in Resources */,
 				96CFD155168D308D00BAEEE6 /* Default-568h@2x.png in Resources */,
-				96CFD15B168D308D00BAEEE6 /* ViewController.xib in Resources */,
-				96CFD165168D3DFF00BAEEE6 /* pict.jpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,14 +202,6 @@
 				96CFD148168D308D00BAEEE6 /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		96CFD159168D308D00BAEEE6 /* ViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				96CFD15A168D308D00BAEEE6 /* en */,
-			);
-			name = ViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -270,6 +258,7 @@
 		96CFD15F168D308D00BAEEE6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ImageCropView/ImageCropView-Prefix.pch";
 				INFOPLIST_FILE = "ImageCropView/ImageCropView-Info.plist";
@@ -281,6 +270,7 @@
 		96CFD160168D308D00BAEEE6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ImageCropView/ImageCropView-Prefix.pch";
 				INFOPLIST_FILE = "ImageCropView/ImageCropView-Info.plist";
@@ -308,6 +298,7 @@
 				96CFD160168D308D00BAEEE6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
