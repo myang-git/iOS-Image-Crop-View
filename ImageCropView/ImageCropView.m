@@ -50,8 +50,8 @@ static bool const square = NO;
                                                   initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                   target:self
                                                   action:@selector(done:)];
-        
-        self.cropView  = [[ImageCropView alloc] initWithFrame:self.view.bounds];
+        CGRect view = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - [[self navigationController] navigationBar].bounds.size.height);
+        self.cropView  = [[ImageCropView alloc] initWithFrame:view];
         self.view = contentView;
         [contentView addSubview:cropView];
         [cropView setImage:self.image];
