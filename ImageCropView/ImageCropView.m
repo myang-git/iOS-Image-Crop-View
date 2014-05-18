@@ -77,7 +77,6 @@ static bool const square = NO;
         UIImage *cropped;
         if (self.image != nil){
             CGRect CropRect = self.cropView.cropAreaInImage;
-            [self.image drawInRect:CropRect];
             CGImageRef imageRef = CGImageCreateWithImageInRect([self.image CGImage], CropRect) ;
             cropped = [UIImage imageWithCGImage:imageRef];
             CGImageRelease(imageRef);
@@ -514,10 +513,10 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 
 - (CGRect)cropAreaInImage {
     CGRect _clearArea = self.cropAreaInView;
-    CGRect r = CGRectMake((_clearArea.origin.x - imageFrameInView.origin.x) * self.imageScale, 
-                          (_clearArea.origin.y - imageFrameInView.origin.y) * self.imageScale, 
-                          _clearArea.size.width * self.imageScale, 
-                          _clearArea.size.height * self.imageScale);
+    CGRect r = CGRectMake((int)((_clearArea.origin.x - imageFrameInView.origin.x) * self.imageScale),
+                          (int)((_clearArea.origin.y - imageFrameInView.origin.y) * self.imageScale),
+                          (int)(_clearArea.size.width * self.imageScale),
+                          (int)(_clearArea.size.height * self.imageScale));
     return r;
 }
 
