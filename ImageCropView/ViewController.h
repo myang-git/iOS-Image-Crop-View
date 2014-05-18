@@ -16,6 +16,7 @@
     IBOutlet UIImageView *imageView;
 }
 
+- (IBAction)takeBarButtonClick:(id)sender;
 - (IBAction)openBarButtonClick:(id)sender;
 - (IBAction)cropBarButtonClick:(id)sender;
 - (IBAction)saveBarButtonClick:(id)sender;

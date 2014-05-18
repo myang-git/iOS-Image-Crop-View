@@ -30,6 +30,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)takeBarButtonClick:(id)sender {
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
+    [imagePicker setDelegate:self];
+    [self presentViewController:imagePicker animated:NO completion:nil];
+}
+
 - (IBAction)openBarButtonClick:(id)sender
 {
     UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
@@ -58,6 +65,7 @@
    imageView.image = croppedImage;
    [[self navigationController] popViewControllerAnimated:YES];
 }
+
 - (void)ImageCropViewControllerDidCancel:(ImageCropViewController *)controller{
     imageView.image = image;
     [[self navigationController] popViewControllerAnimated:YES];

@@ -95,4 +95,9 @@ typedef struct {
 
 @end
 
+@interface UIImage (fixOrientation)
+
+- (UIImage *)fixOrientation;
+
+@end
 
