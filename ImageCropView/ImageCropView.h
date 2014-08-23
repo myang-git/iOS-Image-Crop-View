@@ -85,7 +85,6 @@ typedef struct {
     UIActionSheet * actionSheet;
 }
 @property (nonatomic, weak) id<ImageCropViewControllerDelegate> delegate;
-@property (nonatomic, retain) UIActionSheet * actionSheet;
 @property (nonatomic, retain) UIImage* image;
 @property (nonatomic, retain) ImageCropView* cropView;
 

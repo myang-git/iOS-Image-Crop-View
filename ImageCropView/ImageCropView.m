@@ -16,7 +16,6 @@ static bool const square = NO;
 
 @synthesize delegate;
 @synthesize cropView;
-@synthesize actionSheet;
 
 -(id)initWithImage:(UIImage*) image{
    self =  [super init];
