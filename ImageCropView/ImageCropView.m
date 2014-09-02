@@ -16,7 +16,6 @@ static bool const square = NO;
 
 @synthesize delegate;
 @synthesize cropView;
-@synthesize actionSheet;
 
 -(id)initWithImage:(UIImage*) image{
    self =  [super init];
@@ -243,6 +242,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     cropAreaView.opaque = NO;
     cropAreaView.backgroundColor = [UIColor clearColor];
     UIPanGestureRecognizer* dragRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];
+    dragRecognizer.maximumNumberOfTouches = 1;
     [self.viewForBaselineLayout addGestureRecognizer:dragRecognizer];
     
     [self addSubview:imageView];
@@ -427,7 +427,6 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGPoint newBottomLeft = CGPointMake(dragPoint.bottomLeftCenter.x + dX, dragPoint.bottomLeftCenter.y + dY);
     CGPoint newBottomRight = CGPointMake(dragPoint.bottomRightCenter.x + dX, dragPoint.bottomRightCenter.y + dY);
     CGPoint newTopRight = CGPointMake(dragPoint.topRightCenter.x + dX, dragPoint.topRightCenter.y + dY);
-    CGPoint newClearAreaCenter = CGPointMake(dragPoint.clearAreaCenter.x + dX, dragPoint.clearAreaCenter.y + dY);
 
     CGFloat clearAreaWidth = dragPoint.topRightCenter.x - dragPoint.topLeftCenter.x;
     CGFloat clearAreaHeight = dragPoint.bottomLeftCenter.y - dragPoint.topLeftCenter.y;
@@ -470,17 +469,6 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     bottomRightPoint.center = newBottomRight;
     topRightPoint.center = newTopRight;
 
-    return;
-    
-    [self boundingBoxForTopLeft:newTopLeft
-                                          bottomLeft:newBottomLeft 
-                                         bottomRight:newBottomRight 
-                                            topRight:newTopRight];
-    
-        cropAreaView.center = newClearAreaCenter;
-        CGRect newClearArea = [self clearAreaFromControlPoints];
-        [shadeView setCropArea:newClearArea];
-    
 }
 
 - (void)setControlPointSize:(CGFloat)_controlPointSize {
