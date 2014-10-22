@@ -215,7 +215,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGRect subviewFrame = self.bounds;
     
     //the shade
-    shadeView = [[ShadeView alloc] initWithFrame:subviewFrame];
+    self.shadeView = [[ShadeView alloc] initWithFrame:subviewFrame];
     
     //the image
     imageView = [[UIImageView alloc] initWithFrame:subviewFrame];
@@ -248,7 +248,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     [self.viewForBaselineLayout addGestureRecognizer:dragRecognizer];
     
     [self addSubview:imageView];
-    [self addSubview:shadeView];
+    [self addSubview:self.shadeView];
     [self addSubview:cropAreaView];
     [self addSubview:topRightPoint];
     [self addSubview:bottomRightPoint];
@@ -256,7 +256,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     [self addSubview:bottomLeftPoint];
     
     PointsArray = [[NSArray alloc] initWithObjects:topRightPoint, bottomRightPoint, topLeftPoint, bottomLeftPoint, nil];
-    [shadeView setCropArea:cropArea];
+    [self.shadeView setCropArea:cropArea];
     
     self.maskAlpha = DEFAULT_MASK_ALPHA;
     
@@ -339,7 +339,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 
     CGRect clearArea = [self clearAreaFromControlPoints];
     cropAreaView.frame = clearArea;
-    [shadeView setCropArea:clearArea];
+    [self.shadeView setCropArea:clearArea];
 }
 
 - (CGSize)deriveDisplacementFromDragLocation:(CGPoint)dragLocation draggedPoint:(CGPoint)draggedPoint oppositePoint:(CGPoint)oppositePoint {
@@ -577,11 +577,11 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 }
 
 - (void)setMaskAlpha:(CGFloat)alpha {
-    shadeView.shadeAlpha = alpha;
+    self.shadeView.shadeAlpha = alpha;
 }
 
 - (CGFloat)maskAlpha {
-    return shadeView.shadeAlpha;
+    return self.shadeView.shadeAlpha;
 }
 
 - (CGRect)cropAreaInImage {
@@ -615,7 +615,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     bottomLeftPoint.center = bottomLeft;
     bottomRightPoint.center = bottomRight;
     topRightPoint.center = topRight;
-    shadeView.cropArea = area;
+    self.shadeView.cropArea = area;
     [self setNeedsDisplay];
 }
 
@@ -645,11 +645,14 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     imageView.frame = imageFrameInView;
     imageView.image = image;
     
+    UIImage* blur = [image blurredImageWithRadius:30 iterations:1 tintColor:[UIColor blackColor]];
+    [self.shadeView.blurredImageView setImage:blur];
+    
     //Special fix. If scaledImageWidth or scaledImageHeight < clearArea.width of clearArea.Height.
     [self boundingBoxForTopLeft:topLeftPoint.center bottomLeft:bottomLeftPoint.center bottomRight:bottomRightPoint.center topRight:topRightPoint.center];
     CGRect clearArea = [self clearAreaFromControlPoints];
     cropAreaView.frame = clearArea;
-    [shadeView setCropArea:clearArea];
+    [self.shadeView setCropArea:clearArea];
     
 }
 
@@ -659,7 +662,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 
 - (void)setControlColor:(UIColor *)_color {
     controlColor = _color;
-    shadeView.cropBorderColor = _color;
+    self.shadeView.cropBorderColor = _color;
     topLeftPoint.color = _color;
     bottomLeftPoint.color = _color;
     bottomRightPoint.color = _color;

@@ -3,6 +3,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FXBlurView.h"
 
 #pragma mark ControlPointView interface
 
@@ -25,9 +26,9 @@
 @property (nonatomic, retain) UIColor* cropBorderColor;
 @property (nonatomic) CGRect cropArea;
 @property (nonatomic) CGFloat shadeAlpha;
+@property (nonatomic, strong) UIImageView *blurredImageView;
 
 @end
-
 
 CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size);
 
@@ -44,7 +45,6 @@ typedef struct {
 #pragma mark ImageCropView interface
 
 @interface ImageCropView : UIView {
-    ShadeView* shadeView;
     UIImageView* imageView;
     CGRect imageFrameInView;
     CGFloat imageScale;
@@ -69,6 +69,7 @@ typedef struct {
 @property (nonatomic, readonly) CGFloat imageScale;
 @property (nonatomic) CGFloat maskAlpha;
 @property (nonatomic, retain) UIColor* controlColor;
+@property (nonatomic, strong) ShadeView* shadeView;
 
 @end
 
