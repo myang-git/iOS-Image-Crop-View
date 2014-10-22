@@ -8,6 +8,8 @@
 
 static CGFloat const DEFAULT_MASK_ALPHA = 0.75;
 static bool const square = NO;
+float IMAGE_MIN_HEIGHT = 400;
+float IMAGE_MIN_WIDTH = 400;
 
 #pragma mark ImageCropViewController implementation
 
@@ -390,6 +392,27 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGPoint topRight = CGPointMake(dragPoint.topRightCenter.x, dragPoint.topLeftCenter.y + disp.height);
     CGPoint bottomLeft = CGPointMake(dragPoint.bottomLeftCenter.x + disp.width, dragPoint.bottomLeftCenter.y);
     
+    // Make sure that the new cropping area will not be smaller than the minimum image size
+    CGFloat width = topRight.x - topLeft.x;
+    CGFloat height = bottomLeft.y - topLeft.y;
+    width = width * self.imageScale;
+    height = height * self.imageScale;
+    
+    // If the crop area is too small, set the points at the minimum spacing.
+    CGRect cropArea = [self clearAreaFromControlPoints];
+    if (width >= IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
+        topLeft.y = cropArea.origin.y + (((cropArea.size.height * self.imageScale) - IMAGE_MIN_HEIGHT) / self.imageScale);
+        topRight.y = topLeft.y;
+    } else if (width < IMAGE_MIN_WIDTH && height >= IMAGE_MIN_HEIGHT) {
+        topLeft.x = cropArea.origin.x + (((cropArea.size.width * self.imageScale) - IMAGE_MIN_WIDTH) / self.imageScale);
+        bottomLeft.x = topLeft.x;
+    } else if (width < IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
+        topLeft.x = cropArea.origin.x + (((cropArea.size.width * self.imageScale) - IMAGE_MIN_WIDTH) / self.imageScale);
+        topLeft.y = cropArea.origin.y + (((cropArea.size.height * self.imageScale) - IMAGE_MIN_HEIGHT) / self.imageScale);
+        topRight.y = topLeft.y;
+        bottomLeft.x = topLeft.x;
+    }
+    
     [self boundingBoxForTopLeft:topLeft bottomLeft:bottomLeft bottomRight:dragPoint.bottomRightCenter topRight:topRight];
 }
 - (void)handleDragBottomLeft:(CGPoint)dragLocation {
@@ -397,6 +420,27 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGPoint bottomLeft = CGPointMake(dragPoint.bottomLeftCenter.x + disp.width, dragPoint.bottomLeftCenter.y + disp.height);
     CGPoint topLeft = CGPointMake(dragPoint.topLeftCenter.x + disp.width, dragPoint.topLeftCenter.y);
     CGPoint bottomRight = CGPointMake(dragPoint.bottomRightCenter.x, dragPoint.bottomRightCenter.y + disp.height);
+    
+    // Make sure that the new cropping area will not be smaller than the minimum image size
+    CGFloat width = bottomRight.x - bottomLeft.x;
+    CGFloat height = bottomLeft.y - topLeft.y;
+    width = width * self.imageScale;
+    height = height * self.imageScale;
+    
+    // If the crop area is too small, set the points at the minimum spacing.
+    CGRect cropArea = [self clearAreaFromControlPoints];
+    if (width >= IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
+        bottomLeft.y = cropArea.origin.y + (IMAGE_MIN_HEIGHT / self.imageScale);
+        bottomRight.y = bottomLeft.y;
+    } else if (width < IMAGE_MIN_WIDTH && height >= IMAGE_MIN_HEIGHT) {
+        bottomLeft.x = cropArea.origin.x + (((cropArea.size.width * self.imageScale) - IMAGE_MIN_WIDTH) / self.imageScale);
+        topLeft.x = bottomLeft.x;
+    } else if (width < IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
+        bottomLeft.x = cropArea.origin.x + (((cropArea.size.width * self.imageScale) - IMAGE_MIN_WIDTH) / self.imageScale);
+        bottomLeft.y = cropArea.origin.y + (IMAGE_MIN_HEIGHT / self.imageScale);
+        topLeft.x = bottomLeft.x;
+        bottomRight.y = bottomLeft.y;
+    }
     
     [self boundingBoxForTopLeft:topLeft bottomLeft:bottomLeft bottomRight:bottomRight topRight:dragPoint.topRightCenter];
 }
@@ -406,6 +450,27 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGPoint bottomRight = CGPointMake(dragPoint.bottomRightCenter.x + disp.width, dragPoint.bottomRightCenter.y + disp.height);
     CGPoint topRight = CGPointMake(dragPoint.topRightCenter.x + disp.width, dragPoint.topRightCenter.y);
     CGPoint bottomLeft = CGPointMake(dragPoint.bottomLeftCenter.x, dragPoint.bottomLeftCenter.y + disp.height);
+    
+    // Make sure that the new cropping area will not be smaller than the minimum image size
+    CGFloat width = bottomRight.x - bottomLeft.x;
+    CGFloat height = bottomRight.y - topRight.y;
+    width = width * self.imageScale;
+    height = height * self.imageScale;
+    
+    // If the crop area is too small, set the points at the minimum spacing.
+    CGRect cropArea = [self clearAreaFromControlPoints];
+    if (width >= IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
+        bottomRight.y = cropArea.origin.y + (IMAGE_MIN_HEIGHT / self.imageScale);
+        bottomLeft.y = bottomRight.y;
+    } else if (width < IMAGE_MIN_WIDTH && height >= IMAGE_MIN_HEIGHT) {
+        bottomRight.x = cropArea.origin.x + (IMAGE_MIN_WIDTH / self.imageScale);
+        topRight.x = bottomRight.x;
+    } else if (width < IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
+        bottomRight.x = cropArea.origin.x + (IMAGE_MIN_WIDTH / self.imageScale);
+        bottomRight.y = cropArea.origin.y + (IMAGE_MIN_HEIGHT / self.imageScale);
+        topRight.x = bottomRight.x;
+        bottomLeft.y = bottomRight.y;
+    }
 
     [self boundingBoxForTopLeft:dragPoint.topLeftCenter bottomLeft:bottomLeft bottomRight:bottomRight topRight:topRight];
 }
@@ -415,6 +480,27 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGPoint topRight = CGPointMake(dragPoint.topRightCenter.x + disp.width, dragPoint.topRightCenter.y + disp.height);
     CGPoint topLeft = CGPointMake(dragPoint.topLeftCenter.x, dragPoint.topLeftCenter.y + disp.height);
     CGPoint bottomRight = CGPointMake(dragPoint.bottomRightCenter.x + disp.width, dragPoint.bottomRightCenter.y);
+    
+    // Make sure that the new cropping area will not be smaller than the minimum image size
+    CGFloat width = topRight.x - topLeft.x;
+    CGFloat height = bottomRight.y - topRight.y;
+    width = width * self.imageScale;
+    height = height * self.imageScale;
+    
+    // If the crop area is too small, set the points at the minimum spacing.
+    CGRect cropArea = [self clearAreaFromControlPoints];
+    if (width >= IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
+        topRight.y = cropArea.origin.y + (((cropArea.size.height * self.imageScale) - IMAGE_MIN_HEIGHT) / self.imageScale);
+        topLeft.y = topRight.y;
+    } else if (width < IMAGE_MIN_WIDTH && height >= IMAGE_MIN_HEIGHT) {
+        topRight.x = cropArea.origin.x + (IMAGE_MIN_WIDTH / self.imageScale);
+        bottomRight.x = topRight.x;
+    } else if (width < IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
+        topRight.x = cropArea.origin.x + (IMAGE_MIN_WIDTH / self.imageScale);
+        topRight.y = cropArea.origin.y + (((cropArea.size.height * self.imageScale) - IMAGE_MIN_HEIGHT) / self.imageScale);
+        topLeft.y = topRight.y;
+        bottomRight.x = topRight.x;
+    }
 
     [self boundingBoxForTopLeft:topLeft bottomLeft:dragPoint.bottomLeftCenter bottomRight:bottomRight topRight:topRight];
 }
