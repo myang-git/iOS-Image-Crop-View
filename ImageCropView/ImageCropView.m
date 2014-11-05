@@ -131,6 +131,7 @@ float IMAGE_MIN_WIDTH = 400;
     if (self) {
         // Initialization code
         self.opaque = NO;
+        self.blurredImageView = [[UIImageView alloc] init];
     }
     return self;
 }
@@ -162,7 +163,7 @@ float IMAGE_MIN_WIDTH = 400;
     return shadeAlpha;
 }
 
-- (void)drawRect:(CGRect)rect
+/*- (void)drawRect:(CGRect)rect
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextClearRect(context, rect);
@@ -176,6 +177,26 @@ float IMAGE_MIN_WIDTH = 400;
     CGContextSetLineWidth(context, 2);
     CGContextStrokeRect(context, self.cropArea);
     
+}*/
+
+- (void)drawRect:(CGRect)rect
+{
+    CALayer* layer = self.blurredImageView.layer;
+    
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+    CGContextRef c = UIGraphicsGetCurrentContext();
+    CGContextAddRect(c, self.cropArea);
+    CGContextAddRect(c, rect);
+    CGContextEOClip(c);
+    CGContextSetFillColorWithColor(c, [UIColor blackColor].CGColor);
+    CGContextFillRect(c, rect);
+    UIImage* maskim = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    CALayer* mask = [CALayer layer];
+    mask.frame = rect;
+    mask.contents = (id)maskim.CGImage;
+    layer.mask = mask;
 }
 
 @end
@@ -249,6 +270,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     
     [self addSubview:imageView];
     [self addSubview:self.shadeView];
+    [self addSubview:self.shadeView.blurredImageView];
     [self addSubview:cropAreaView];
     [self addSubview:topRightPoint];
     [self addSubview:bottomRightPoint];
@@ -336,9 +358,12 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     else if (dragView==cropAreaView) {
         [self handleDragClearArea:location];
     }
-
+    
     CGRect clearArea = [self clearAreaFromControlPoints];
     cropAreaView.frame = clearArea;
+    
+    // Create offset to make frame within imageView
+    clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
     [self.shadeView setCropArea:clearArea];
 }
 
@@ -645,6 +670,25 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     imageView.frame = imageFrameInView;
     imageView.image = image;
     
+    /* prepare imageviews and their frame */
+    self.shadeView.blurredImageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.clipsToBounds = YES;
+    self.shadeView.blurredImageView.clipsToBounds = YES;
+    
+    CGRect blurFrame;
+    if (imageFrameInView.origin.x < 0 && (imageFrameInView.size.width - fabsf(imageFrameInView.origin.x) >= 320)) {
+        blurFrame = self.frame;
+    } else {
+        blurFrame = imageFrameInView;
+    }
+    imageView.frame = imageFrameInView;
+    
+    // blurredimageview is on top of shadeview so shadeview needs the same frame as imageView.
+    self.shadeView.frame = imageFrameInView;
+    self.shadeView.blurredImageView.frame = blurFrame;
+
+    // perform image blur
     UIImage* blur = [image blurredImageWithRadius:30 iterations:1 tintColor:[UIColor blackColor]];
     [self.shadeView.blurredImageView setImage:blur];
     
@@ -652,6 +696,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     [self boundingBoxForTopLeft:topLeftPoint.center bottomLeft:bottomLeftPoint.center bottomRight:bottomRightPoint.center topRight:topRightPoint.center];
     CGRect clearArea = [self clearAreaFromControlPoints];
     cropAreaView.frame = clearArea;
+    clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
     [self.shadeView setCropArea:clearArea];
     
 }
