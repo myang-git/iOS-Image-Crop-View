@@ -275,7 +275,9 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     cropAreaView.opaque = NO;
     cropAreaView.backgroundColor = [UIColor clearColor];
     UIPanGestureRecognizer* dragRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];
-    dragRecognizer.maximumNumberOfTouches = 1;
+    dragRecognizer.view.multipleTouchEnabled = YES;
+    dragRecognizer.minimumNumberOfTouches = 1;
+    dragRecognizer.maximumNumberOfTouches = 2;
     [self.viewForBaselineLayout addGestureRecognizer:dragRecognizer];
     
     [self addSubview:imageView];
@@ -340,7 +342,110 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     
     return view;
 }
-- (void)handleDrag:(UIPanGestureRecognizer*)recognizer {
+
+// Overriding this method to create a larger touch surface area without changing view
+- (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent*)event
+{
+    CGRect frame = CGRectInset(cropAreaView.frame, -30, -30);
+    return CGRectContainsPoint(frame, point) ? cropAreaView : nil;
+}
+
+- (void)handleDrag:(UIPanGestureRecognizer*)recognizer
+{
+    NSUInteger count = [recognizer numberOfTouches];
+    if (recognizer.state == UIGestureRecognizerStateBegan || multiDragPoint.lastCount != count) {
+        if (count > 1)
+            [self prepMultiTouchPan:recognizer withCount:count];
+        else
+            [self prepSingleTouchPan:recognizer];
+        multiDragPoint.lastCount = count;
+        return;
+    } else if (recognizer.state == UIGestureRecognizerStateEnded) {
+        return; // no-op
+    }
+    
+    if (count > 1) {
+        // Transforms crop box based on the two dragPoints.
+        for (int i = 0; i < count; i++) {
+            dragPoint = i == 0 ? multiDragPoint.mainPoint : multiDragPoint.optionalPoint;
+            [self beginCropBoxTransformForPoint:[recognizer locationOfTouch:i inView:self] atView:(i == 0 ? dragViewOne : dragViewTwo)];
+            // Assign point centers that could have changed in previous transform
+            multiDragPoint.optionalPoint.topLeftCenter = topLeftPoint.center;
+            multiDragPoint.optionalPoint.bottomLeftCenter = bottomLeftPoint.center;
+            multiDragPoint.optionalPoint.bottomRightCenter = bottomRightPoint.center;
+            multiDragPoint.optionalPoint.topRightCenter = topRightPoint.center;
+            multiDragPoint.optionalPoint.clearAreaCenter = cropAreaView.center;
+        }
+    } else {
+        [self beginCropBoxTransformForPoint:[recognizer locationInView:self] atView:dragViewOne];
+    }
+    // Used to reset multiDragPoint when changing from 1 to 2 touches.
+    multiDragPoint.lastCount = count;
+}
+
+/**
+ * Records current values and points for multi-finger pan gestures
+ * @params recognizer The pan gesuture with current point values
+ * @params count The number of touches on view
+ */
+- (void)prepMultiTouchPan:(UIPanGestureRecognizer*)recognizer withCount:(NSUInteger)count
+{
+    for (int i = 0; i < count; i++) {
+        if (i == 0) {
+            dragViewOne = [self checkHit:[recognizer locationOfTouch:i inView:self]];
+            multiDragPoint.mainPoint.dragStart = [recognizer locationOfTouch:i inView:self];
+        } else {
+            dragViewTwo = [self checkHit:[recognizer locationOfTouch:i inView:self]];
+            multiDragPoint.optionalPoint.dragStart = [recognizer locationOfTouch:i inView:self];
+        }
+    }
+    multiDragPoint.mainPoint.topLeftCenter = topLeftPoint.center;
+    multiDragPoint.mainPoint.bottomLeftCenter = bottomLeftPoint.center;
+    multiDragPoint.mainPoint.bottomRightCenter = bottomRightPoint.center;
+    multiDragPoint.mainPoint.topRightCenter = topRightPoint.center;
+    multiDragPoint.mainPoint.clearAreaCenter = cropAreaView.center;
+}
+
+/**
+ * Records current values and points for single finger pan gestures
+ * @params recognizer The pan gesuture with current point values
+ */
+- (void)prepSingleTouchPan:(UIPanGestureRecognizer*)recognizer
+{
+    dragViewOne = [self checkHit:[recognizer locationInView:self]];
+    dragPoint.dragStart = [recognizer locationInView:self];
+    dragPoint.topLeftCenter = topLeftPoint.center;
+    dragPoint.bottomLeftCenter = bottomLeftPoint.center;
+    dragPoint.bottomRightCenter = bottomRightPoint.center;
+    dragPoint.topRightCenter = topRightPoint.center;
+    dragPoint.clearAreaCenter = cropAreaView.center;
+}
+
+- (void)beginCropBoxTransformForPoint:(CGPoint)location atView:(UIView*)view
+{
+    if (view == topLeftPoint) {
+        [self handleDragTopLeft:location];
+    } else if (view == bottomLeftPoint) {
+        [self handleDragBottomLeft:location];
+    } else if (view == bottomRightPoint) {
+        [self handleDragBottomRight:location];
+    } else if (view == topRightPoint) {
+        [self handleDragTopRight:location];
+    } else if (view == cropAreaView) {
+        [self handleDragClearArea:location];
+    }
+    
+    CGRect clearArea = [self clearAreaFromControlPoints];
+    cropAreaView.frame = clearArea;
+    
+    // Create offset to make frame within imageView
+    clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
+    [self.shadeView setCropArea:clearArea];
+}
+
+
+
+/*- (void)handleDrag:(UIPanGestureRecognizer*)recognizer {
     if (recognizer.state==UIGestureRecognizerStateBegan) {
         dragView = [self checkHit:[recognizer locationInView:self]];
         dragPoint.dragStart = [recognizer locationInView:self];
@@ -375,7 +480,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     // Create offset to make frame within imageView
     clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
     [self.shadeView setCropArea:clearArea];
-}
+}*/
 
 - (CGSize)deriveDisplacementFromDragLocation:(CGPoint)dragLocation draggedPoint:(CGPoint)draggedPoint oppositePoint:(CGPoint)oppositePoint {
     CGFloat dX = dragLocation.x - dragPoint.dragStart.x;

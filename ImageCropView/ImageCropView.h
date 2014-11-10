@@ -42,6 +42,13 @@ typedef struct {
     CGPoint clearAreaCenter;
 } DragPoint;
 
+// Used when working with multiple dragPoints
+typedef struct {
+    DragPoint mainPoint;
+    DragPoint optionalPoint;
+    NSUInteger lastCount;
+} MultiDragPoint;
+
 #pragma mark ImageCropView interface
 
 @interface ImageCropView : UIView {
@@ -59,6 +66,10 @@ typedef struct {
 
     UIView* cropAreaView;
     DragPoint dragPoint;
+    MultiDragPoint multiDragPoint;
+    
+    UIView* dragViewOne;
+    UIView* dragViewTwo;
 }
 - (id)initWithFrame:(CGRect)frame blurOn:(BOOL)blurOn;
 - (void)setImage:(UIImage*)image;
