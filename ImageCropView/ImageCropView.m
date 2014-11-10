@@ -163,22 +163,6 @@ float IMAGE_MIN_WIDTH = 400;
     return shadeAlpha;
 }
 
-/*- (void)drawRect:(CGRect)rect
-{
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextClearRect(context, rect);
-    
-    CGContextSetRGBFillColor(context, 0, 0, 0.05, self.shadeAlpha);
-    CGContextFillRect(context, rect);
-    
-    CGContextClearRect(context, self.cropArea);
-    
-    CGContextSetRGBStrokeColor(context, cropBorderRed, cropBorderGreen, cropBorderBlue, cropBorderAlpha);
-    CGContextSetLineWidth(context, 2);
-    CGContextStrokeRect(context, self.cropArea);
-    
-}*/
-
 - (void)drawRect:(CGRect)rect
 {
     CALayer* layer = self.blurredImageView.layer;
@@ -442,45 +426,6 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
     [self.shadeView setCropArea:clearArea];
 }
-
-
-
-/*- (void)handleDrag:(UIPanGestureRecognizer*)recognizer {
-    if (recognizer.state==UIGestureRecognizerStateBegan) {
-        dragView = [self checkHit:[recognizer locationInView:self]];
-        dragPoint.dragStart = [recognizer locationInView:self];
-        dragPoint.topLeftCenter = topLeftPoint.center;
-        dragPoint.bottomLeftCenter = bottomLeftPoint.center;
-        dragPoint.bottomRightCenter = bottomRightPoint.center;
-        dragPoint.topRightCenter = topRightPoint.center;
-        dragPoint.clearAreaCenter = cropAreaView.center;
-        return;
-    }
-    
-    CGPoint location = [recognizer locationInView:self];
-    if (dragView==topLeftPoint) {
-        [self handleDragTopLeft:location];
-    }
-    else if (dragView==bottomLeftPoint) {
-        [self handleDragBottomLeft:location];
-    }
-    else if (dragView==bottomRightPoint) {
-        [self handleDragBottomRight:location];
-    }
-    else if (dragView==topRightPoint) {
-        [self handleDragTopRight:location];
-    }
-    else if (dragView==cropAreaView) {
-        [self handleDragClearArea:location];
-    }
-    
-    CGRect clearArea = [self clearAreaFromControlPoints];
-    cropAreaView.frame = clearArea;
-    
-    // Create offset to make frame within imageView
-    clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
-    [self.shadeView setCropArea:clearArea];
-}*/
 
 - (CGSize)deriveDisplacementFromDragLocation:(CGPoint)dragLocation draggedPoint:(CGPoint)draggedPoint oppositePoint:(CGPoint)oppositePoint {
     CGFloat dX = dragLocation.x - dragPoint.dragStart.x;
