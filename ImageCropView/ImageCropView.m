@@ -52,7 +52,7 @@ float IMAGE_MIN_WIDTH = 400;
                                                   target:self
                                                   action:@selector(done:)];
         CGRect view = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - [[self navigationController] navigationBar].bounds.size.height);
-        self.cropView  = [[ImageCropView alloc] initWithFrame:view];
+        self.cropView  = [[ImageCropView alloc] initWithFrame:view blurOn:self.blurredBackground];
         self.view = contentView;
         [contentView addSubview:cropView];
         [cropView setImage:self.image];
@@ -220,6 +220,16 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 {
     self = [super initWithFrame:frame];
     if (self) {
+        [self initViews];
+    }
+    return self;
+}
+
+- (id)initWithFrame:(CGRect)frame blurOn:(BOOL)blurOn
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.blurred = blurOn;
         [self initViews];
     }
     return self;
@@ -689,7 +699,12 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     self.shadeView.blurredImageView.frame = blurFrame;
 
     // perform image blur
-    UIImage* blur = [image blurredImageWithRadius:30 iterations:1 tintColor:[UIColor blackColor]];
+    UIImage *blur;
+    if (self.blurred) {
+        blur = [image blurredImageWithRadius:30 iterations:1 tintColor:[UIColor blackColor]];
+    } else {
+        blur = [image blurredImageWithRadius:0 iterations:1 tintColor:[UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:1.0]];
+    }
     [self.shadeView.blurredImageView setImage:blur];
     
     //Special fix. If scaledImageWidth or scaledImageHeight < clearArea.width of clearArea.Height.

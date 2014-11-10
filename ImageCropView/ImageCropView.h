@@ -60,7 +60,8 @@ typedef struct {
     UIView* cropAreaView;
     DragPoint dragPoint;
 }
--(void)setImage:(UIImage*)image;
+- (id)initWithFrame:(CGRect)frame blurOn:(BOOL)blurOn;
+- (void)setImage:(UIImage*)image;
 
 @property (nonatomic) CGFloat controlPointSize;
 @property (nonatomic, retain) UIImage* image;
@@ -70,6 +71,7 @@ typedef struct {
 @property (nonatomic) CGFloat maskAlpha;
 @property (nonatomic, retain) UIColor* controlColor;
 @property (nonatomic, strong) ShadeView* shadeView;
+@property (nonatomic) BOOL blurred;
 
 @end
 
@@ -86,6 +88,7 @@ typedef struct {
     UIActionSheet * actionSheet;
 }
 @property (nonatomic, weak) id<ImageCropViewControllerDelegate> delegate;
+@property (nonatomic) BOOL blurredBackground;
 @property (nonatomic, retain) UIImage* image;
 @property (nonatomic, retain) ImageCropView* cropView;
 
