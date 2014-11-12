@@ -62,6 +62,7 @@
     if(image != nil){
         ImageCropViewController *controller = [[ImageCropViewController alloc] initWithImage:image];
         controller.delegate = self;
+        controller.blurredBackground = YES;
         [[self navigationController] pushViewController:controller animated:YES];
     }
 }
