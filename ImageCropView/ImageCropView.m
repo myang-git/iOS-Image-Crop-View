@@ -51,7 +51,8 @@ float IMAGE_MIN_WIDTH = 400;
                                                   initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                   target:self
                                                   action:@selector(done:)];
-        CGRect view = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - [[self navigationController] navigationBar].bounds.size.height);
+        CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+        CGRect view = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - [[self navigationController] navigationBar].bounds.size.height - statusBarSize.height);
         self.cropView  = [[ImageCropView alloc] initWithFrame:view blurOn:self.blurredBackground];
         self.view = contentView;
         [contentView addSubview:cropView];
@@ -424,6 +425,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     
     // Create offset to make frame within imageView
     clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
+    clearArea.origin.x = clearArea.origin.x - imageFrameInView.origin.x;
     [self.shadeView setCropArea:clearArea];
 }
 
@@ -709,7 +711,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGFloat frameHeight = self.frame.size.height;
     CGFloat imageWidth = image.size.width;
     CGFloat imageHeight = image.size.height;
-    BOOL isPortrait = imageHeight > imageWidth;
+    BOOL isPortrait = imageHeight / frameHeight > imageWidth/frameWidth;
     int x, y;
     int scaledImageWidth, scaledImageHeight;
     if (isPortrait) {
@@ -762,6 +764,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGRect clearArea = [self clearAreaFromControlPoints];
     cropAreaView.frame = clearArea;
     clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
+    clearArea.origin.x = clearArea.origin.x - imageFrameInView.origin.x;
     [self.shadeView setCropArea:clearArea];
     
 }
