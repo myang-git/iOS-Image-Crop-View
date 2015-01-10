@@ -31,16 +31,22 @@
 }
 
 - (IBAction)takeBarButtonClick:(id)sender {
-    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-    [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
-    [imagePicker setDelegate:self];
-    [self presentViewController:imagePicker animated:YES completion:nil];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
+        [imagePicker setDelegate:self];
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }
+    else
+    {
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Your device doesn't have a camera." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+    }
 }
 
 - (IBAction)openBarButtonClick:(id)sender
 {
     UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
-    imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
     imagePickerController.delegate = self;
     [self presentViewController:imagePickerController animated:YES completion:nil];
 }
@@ -56,6 +62,7 @@
     if(image != nil){
         ImageCropViewController *controller = [[ImageCropViewController alloc] initWithImage:image];
         controller.delegate = self;
+        controller.blurredBackground = YES;
         [[self navigationController] pushViewController:controller animated:YES];
     }
 }
@@ -82,7 +89,7 @@
 
             } else {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Succes!"
-                                                                message:@"Saved to 'saved photo'"
+                                                                message:@"Saved to camera roll"
                                                                delegate:nil
                                                       cancelButtonTitle:@"OK"
                                                       otherButtonTitles:nil];

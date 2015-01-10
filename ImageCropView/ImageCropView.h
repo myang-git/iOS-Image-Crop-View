@@ -3,6 +3,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FXBlurView.h"
 
 #pragma mark ControlPointView interface
 
@@ -25,9 +26,9 @@
 @property (nonatomic, retain) UIColor* cropBorderColor;
 @property (nonatomic) CGRect cropArea;
 @property (nonatomic) CGFloat shadeAlpha;
+@property (nonatomic, strong) UIImageView *blurredImageView;
 
 @end
-
 
 CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size);
 
@@ -41,10 +42,16 @@ typedef struct {
     CGPoint clearAreaCenter;
 } DragPoint;
 
+// Used when working with multiple dragPoints
+typedef struct {
+    DragPoint mainPoint;
+    DragPoint optionalPoint;
+    NSUInteger lastCount;
+} MultiDragPoint;
+
 #pragma mark ImageCropView interface
 
 @interface ImageCropView : UIView {
-    ShadeView* shadeView;
     UIImageView* imageView;
     CGRect imageFrameInView;
     CGFloat imageScale;
@@ -59,8 +66,13 @@ typedef struct {
 
     UIView* cropAreaView;
     DragPoint dragPoint;
+    MultiDragPoint multiDragPoint;
+    
+    UIView* dragViewOne;
+    UIView* dragViewTwo;
 }
--(void)setImage:(UIImage*)image;
+- (id)initWithFrame:(CGRect)frame blurOn:(BOOL)blurOn;
+- (void)setImage:(UIImage*)image;
 
 @property (nonatomic) CGFloat controlPointSize;
 @property (nonatomic, retain) UIImage* image;
@@ -69,6 +81,8 @@ typedef struct {
 @property (nonatomic, readonly) CGFloat imageScale;
 @property (nonatomic) CGFloat maskAlpha;
 @property (nonatomic, retain) UIColor* controlColor;
+@property (nonatomic, strong) ShadeView* shadeView;
+@property (nonatomic) BOOL blurred;
 
 @end
 
@@ -85,7 +99,7 @@ typedef struct {
     UIActionSheet * actionSheet;
 }
 @property (nonatomic, weak) id<ImageCropViewControllerDelegate> delegate;
-@property (nonatomic, retain) UIActionSheet * actionSheet;
+@property (nonatomic) BOOL blurredBackground;
 @property (nonatomic, retain) UIImage* image;
 @property (nonatomic, retain) ImageCropView* cropView;
 

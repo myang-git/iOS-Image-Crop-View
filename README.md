@@ -1,8 +1,8 @@
 iOS-Image-Crop-View
 ===================
 
-A view allowing user to specify a rectangle area in an image. The user can either drag the corner to 
-resize it or move the entire bounding box. The color and size of the dots on the corner can be customized.
+A view allowing user to specify a rectangle area in an image. The user can drag the corner to 
+resize it, move the entire bounding box, or use 2 fingers like a pinch gesture to move and resize the bounding box. The color and size of the dots on the corner can be customized.
 
 Screenshot
 ===================
@@ -17,24 +17,33 @@ Just copy <code>ImageCropView.h</code> and <code>ImageCropView.m</code> to your 
 and implement ImageCropViewControllerDelegate protocol.
 
 Use it like UIImagePicker:
-
+``` objective-c
 - (void)cropImage:(UIImage *)image{
 	ImageCropViewController *controller = [[ImageCropViewController alloc] initWithImage:image];
 	controller.delegate = self;
 	[[self navigationController] pushViewController:controller animated:YES];
 }
-
+```
+``` objective-c
 - (void)ImageCropViewController:(ImageCropViewController *)controller didFinishCroppingImage:(UIImage *)croppedImage{
    image = croppedImage;
    imageView.image = croppedImage;
    [[self navigationController] popViewControllerAnimated:YES];
 }
-
+```
+``` objective-c
 - (void)ImageCropViewControllerDidCancel:(ImageCropViewController *)controller{
     imageView.image = image;
     [[self navigationController] popViewControllerAnimated:YES];
 }
-
+```
+### Optional Blurring
+Using FXBlurView, you can now blur the parts of the image outside the crop area. This is not for blurring the final cropped image. Just set the `blurredBackground` property in the same place you set the delegate, like so:
+``` objective-c
+controller.blurredBackground = YES;
+```
+### Minimum Image Size
+To set the minimum height and width of a cropped image, simply change the `IMAGE_MIN_HEIGHT` and `IMAGE_MIN_WIDTH` variables at the top of `ImageCropView.m`.
 
 The project comes with a working example (as target ***ImageCropView***) to demostrate the usage. 
 

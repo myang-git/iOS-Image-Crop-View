@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6B85BF2719F74EA400B7F16A /* FXBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B85BF2619F74EA400B7F16A /* FXBlurView.m */; };
+		6B85BF2919F74EB400B7F16A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B85BF2819F74EB400B7F16A /* Accelerate.framework */; };
+		6B85BF2B19F74EB800B7F16A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B85BF2A19F74EB800B7F16A /* QuartzCore.framework */; };
 		96CFD13F168D308D00BAEEE6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CFD13E168D308D00BAEEE6 /* UIKit.framework */; };
 		96CFD141168D308D00BAEEE6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CFD140168D308D00BAEEE6 /* Foundation.framework */; };
 		96CFD143168D308D00BAEEE6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CFD142168D308D00BAEEE6 /* CoreGraphics.framework */; };
@@ -22,6 +25,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6B85BF2519F74EA400B7F16A /* FXBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXBlurView.h; sourceTree = "<group>"; };
+		6B85BF2619F74EA400B7F16A /* FXBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FXBlurView.m; sourceTree = "<group>"; };
+		6B85BF2819F74EB400B7F16A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		6B85BF2A19F74EB800B7F16A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		96CFD13A168D308D00BAEEE6 /* ImageCropView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageCropView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96CFD13E168D308D00BAEEE6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		96CFD140168D308D00BAEEE6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -47,6 +54,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B85BF2B19F74EB800B7F16A /* QuartzCore.framework in Frameworks */,
+				6B85BF2919F74EB400B7F16A /* Accelerate.framework in Frameworks */,
 				96CFD13F168D308D00BAEEE6 /* UIKit.framework in Frameworks */,
 				96CFD141168D308D00BAEEE6 /* Foundation.framework in Frameworks */,
 				96CFD143168D308D00BAEEE6 /* CoreGraphics.framework in Frameworks */,
@@ -56,6 +65,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6B85BF2419F74EA400B7F16A /* FXBlurView */ = {
+			isa = PBXGroup;
+			children = (
+				6B85BF2519F74EA400B7F16A /* FXBlurView.h */,
+				6B85BF2619F74EA400B7F16A /* FXBlurView.m */,
+			);
+			path = FXBlurView;
+			sourceTree = "<group>";
+		};
 		96CFD12F168D308D00BAEEE6 = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +95,8 @@
 		96CFD13D168D308D00BAEEE6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6B85BF2A19F74EB800B7F16A /* QuartzCore.framework */,
+				6B85BF2819F74EB400B7F16A /* Accelerate.framework */,
 				96CFD13E168D308D00BAEEE6 /* UIKit.framework */,
 				96CFD140168D308D00BAEEE6 /* Foundation.framework */,
 				96CFD142168D308D00BAEEE6 /* CoreGraphics.framework */,
@@ -110,6 +130,7 @@
 		96CFD166168D458A00BAEEE6 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				6B85BF2419F74EA400B7F16A /* FXBlurView */,
 				96CFD145168D308D00BAEEE6 /* Supporting Files */,
 				96CFD14D168D308D00BAEEE6 /* AppDelegate.h */,
 				96CFD14E168D308D00BAEEE6 /* AppDelegate.m */,
@@ -188,6 +209,7 @@
 			files = (
 				96CFD14B168D308D00BAEEE6 /* main.m in Sources */,
 				96CFD14F168D308D00BAEEE6 /* AppDelegate.m in Sources */,
+				6B85BF2719F74EA400B7F16A /* FXBlurView.m in Sources */,
 				96CFD158168D308D00BAEEE6 /* ViewController.m in Sources */,
 				96CFD163168D309800BAEEE6 /* ImageCropView.m in Sources */,
 			);
