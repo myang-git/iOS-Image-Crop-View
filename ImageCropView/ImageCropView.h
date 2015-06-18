@@ -89,7 +89,7 @@ typedef struct {
 #pragma mark ImageCropViewController interface
 @protocol ImageCropViewControllerDelegate <NSObject>
 
-- (void)ImageCropViewController:(UIViewController* )controller didFinishCroppingImage:(UIImage *)croppedImage;
+- (void)ImageCropViewControllerSuccess:(UIViewController* )controller didFinishCroppingImage:(UIImage *)croppedImage;
 - (void)ImageCropViewControllerDidCancel:(UIViewController *)controller;
 
 @end
