@@ -73,7 +73,7 @@ float IMAGE_MIN_WIDTH = 400;
 - (IBAction)done:(id)sender
 {
     
-    if ([self.delegate respondsToSelector:@selector(ImageCropViewController:didFinishCroppingImage:)])
+    if ([self.delegate respondsToSelector:@selector(ImageCropViewControllerSuccess:didFinishCroppingImage:)])
     {
         UIImage *cropped;
         if (self.image != nil){
@@ -82,7 +82,7 @@ float IMAGE_MIN_WIDTH = 400;
             cropped = [UIImage imageWithCGImage:imageRef];
             CGImageRelease(imageRef);
         }
-        [self.delegate ImageCropViewController:self didFinishCroppingImage:cropped];
+        [self.delegate ImageCropViewControllerSuccess:self didFinishCroppingImage:cropped];
     }
     
 }
