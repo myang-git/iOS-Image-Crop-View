@@ -435,7 +435,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGPoint tempDraggedPoint = CGPointMake(draggedPoint.x + dX, draggedPoint.y + dY);
     CGFloat width = (tempDraggedPoint.x - oppositePoint.x);
     CGFloat height = (tempDraggedPoint.y - oppositePoint.y);
-    CGFloat size = fabs(width)>=fabsf(height) ? width : height;
+    CGFloat size = fabs(width)>=fabs(height) ? width : height;
     CGFloat xDir = draggedPoint.x<=oppositePoint.x ? 1 : -1;
     CGFloat yDir = draggedPoint.y<=oppositePoint.y ? 1 : -1;
     CGFloat newX = 0, newY = 0;
@@ -739,7 +739,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     self.shadeView.blurredImageView.clipsToBounds = YES;
     
     CGRect blurFrame;
-    if (imageFrameInView.origin.x < 0 && (imageFrameInView.size.width - fabsf(imageFrameInView.origin.x) >= 320)) {
+    if (imageFrameInView.origin.x < 0 && (imageFrameInView.size.width - fabs(imageFrameInView.origin.x) >= 320)) {
         blurFrame = self.frame;
     } else {
         blurFrame = imageFrameInView;
