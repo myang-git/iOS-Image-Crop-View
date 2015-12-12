@@ -275,7 +275,6 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     [self addSubview:bottomLeftPoint];
     
     PointsArray = [[NSArray alloc] initWithObjects:topRightPoint, bottomRightPoint, topLeftPoint, bottomLeftPoint, nil];
-    [self.shadeView setCropArea:cropArea];
     
     self.maskAlpha = DEFAULT_MASK_ALPHA;
     
