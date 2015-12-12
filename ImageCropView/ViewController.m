@@ -63,6 +63,7 @@
         ImageCropViewController *controller = [[ImageCropViewController alloc] initWithImage:image];
         controller.delegate = self;
         controller.blurredBackground = YES;
+        controller.pointSize = 9.5;
         [[self navigationController] pushViewController:controller animated:YES];
     }
 }

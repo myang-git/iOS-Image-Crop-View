@@ -53,7 +53,7 @@ float IMAGE_MIN_WIDTH = 400;
                                                   action:@selector(done:)];
         CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
         CGRect view = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - [[self navigationController] navigationBar].bounds.size.height - statusBarSize.height);
-        self.cropView  = [[ImageCropView alloc] initWithFrame:view blurOn:self.blurredBackground];
+        self.cropView  = [[ImageCropView alloc] initWithFrame:view blurOn:self.blurredBackground pointSize:self.pointSize];
         self.view = contentView;
         [contentView addSubview:cropView];
         [cropView setImage:self.image];
@@ -210,11 +210,15 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame blurOn:(BOOL)blurOn
+- (id)initWithFrame:(CGRect)frame blurOn:(BOOL)blurOn pointSize:(CGFloat)pointSize
 {
     self = [super initWithFrame:frame];
     if (self) {
         self.blurred = blurOn;
+        controlPointSize = DEFAULT_CONTROL_POINT_SIZE;
+        if (pointSize != 0) {
+            controlPointSize = pointSize;
+        }
         [self initViews];
     }
     return self;
@@ -237,9 +241,9 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     imageView = [[UIImageView alloc] initWithFrame:subviewFrame];
 
     //control points
-    controlPointSize = DEFAULT_CONTROL_POINT_SIZE;
     int initialClearAreaSize = self.frame.size.width / 5;
     CGPoint centerInView = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
+    NSLog(@"%f", controlPointSize);
     topLeftPoint = [self createControlPointAt:SquareCGRectAtCenter(centerInView.x - initialClearAreaSize,
                                                                    centerInView.y - initialClearAreaSize, 
                                                                    controlPointSize)];
@@ -275,7 +279,6 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     [self addSubview:bottomLeftPoint];
     
     PointsArray = [[NSArray alloc] initWithObjects:topRightPoint, bottomRightPoint, topLeftPoint, bottomLeftPoint, nil];
-    [self.shadeView setCropArea:cropArea];
     
     self.maskAlpha = DEFAULT_MASK_ALPHA;
     
