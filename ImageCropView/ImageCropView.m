@@ -318,13 +318,18 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     }
 }
 
-- (UIView*)  checkHit:(CGPoint)point {
+- (UIView*)checkHit:(CGPoint)point {
     UIView* view = cropAreaView;
-    for (int i =0; i < PointsArray.count; i++) {
-        if (sqrt(pow((point.x-view.center.x),2) + pow((point.y-view.center.y),2))>sqrt(pow((point.x- [PointsArray[i] center].x),2) + pow((point.y- [PointsArray[i] center].y),2)))
+    for (int i = 0; i < PointsArray.count; i++) {
+        CGFloat x = [(ControlPointView *)PointsArray[i] center].x;
+        CGFloat y = [(ControlPointView *)PointsArray[i] center].y;
+        
+        if (sqrt(pow((point.x - view.center.x), 2) + pow((point.y - view.center.y), 2)) >
+            sqrt(pow((point.x - x), 2) + pow((point.y - y), 2)))
+        {
             view = PointsArray[i];
-         }
-    
+        }
+    }
     return view;
 }
 
