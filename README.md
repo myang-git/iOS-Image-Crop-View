@@ -42,6 +42,11 @@ Using FXBlurView, you can now blur the parts of the image outside the crop area.
 ``` objective-c
 controller.blurredBackground = YES;
 ```
+### Override control point size
+Default point size is 5.0 . If you want to override it, you can do
+``` objective-c
+controller.pointSize = 9.5;
+```
 ### Minimum Image Size
 To set the minimum height and width of a cropped image, simply change the `IMAGE_MIN_HEIGHT` and `IMAGE_MIN_WIDTH` variables at the top of `ImageCropView.m`.
 

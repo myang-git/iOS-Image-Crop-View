@@ -71,7 +71,7 @@ typedef struct {
     UIView* dragViewOne;
     UIView* dragViewTwo;
 }
-- (id)initWithFrame:(CGRect)frame blurOn:(BOOL)blurOn;
+- (id)initWithFrame:(CGRect)frame blurOn:(BOOL)blurOn pointSize:(CGFloat)pointSize;
 - (void)setImage:(UIImage*)image;
 
 @property (nonatomic) CGFloat controlPointSize;
@@ -100,6 +100,7 @@ typedef struct {
 }
 @property (nonatomic, weak) id<ImageCropViewControllerDelegate> delegate;
 @property (nonatomic) BOOL blurredBackground;
+@property (nonatomic) CGFloat pointSize;
 @property (nonatomic, retain) UIImage* image;
 @property (nonatomic, retain) ImageCropView* cropView;
 
