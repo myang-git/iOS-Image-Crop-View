@@ -39,7 +39,7 @@ typedef struct {
     CGPoint bottomLeftCenter;
     CGPoint bottomRightCenter;
     CGPoint topRightCenter;
-    CGPoint clearAreaCenter;
+    CGPoint cropAreaCenter;
 } DragPoint;
 
 // Used when working with multiple dragPoints
