@@ -634,11 +634,10 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGFloat cropAreaWidth = dragPoint.topRightCenter.x - dragPoint.topLeftCenter.x;
     CGFloat cropAreaHeight = dragPoint.bottomLeftCenter.y - dragPoint.topLeftCenter.y;
     
-    CGFloat halfControlPointSize = controlPointSize / 2;
-    CGFloat minX = imageFrameInView.origin.x + halfControlPointSize;
-    CGFloat maxX = imageFrameInView.origin.x + imageFrameInView.size.width - halfControlPointSize;
-    CGFloat minY = imageFrameInView.origin.y + halfControlPointSize;
-    CGFloat maxY = imageFrameInView.origin.y + imageFrameInView.size.height - halfControlPointSize;
+    CGFloat minX = imageFrameInView.origin.x;
+    CGFloat maxX = imageFrameInView.origin.x + imageFrameInView.size.width;
+    CGFloat minY = imageFrameInView.origin.y;
+    CGFloat maxY = imageFrameInView.origin.y + imageFrameInView.size.height;
     
     if (newTopLeft.x<minX) {
         newTopLeft.x = minX;
