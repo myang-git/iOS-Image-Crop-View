@@ -11,9 +11,12 @@ static bool const square = NO;
 float IMAGE_MIN_HEIGHT = 400;
 float IMAGE_MIN_WIDTH = 400;
 
+@interface ImageCropViewController(){
+    CGRect _cropArea;
+}
+
+@end
 #pragma mark ImageCropViewController implementation
-
-
 @implementation ImageCropViewController
 
 @synthesize delegate;
@@ -57,6 +60,9 @@ float IMAGE_MIN_WIDTH = 400;
         self.view = contentView;
         [contentView addSubview:cropView];
         [cropView setImage:self.image];
+        if (_cropArea.size.width > 0) {
+            self.cropView.cropAreaInImage = _cropArea;
+        }
     }
 }
 
@@ -86,6 +92,22 @@ float IMAGE_MIN_WIDTH = 400;
     }
     
 }
+
+- (void)setCropArea:(CGRect)cropArea {
+    _cropArea = cropArea;
+    if (self.cropView) {
+        self.cropView.cropAreaInImage = _cropArea;
+    }
+}
+
+- (CGRect)cropArea {
+    if (self.cropView) {
+        return self.cropView.cropAreaInImage;
+    } else {
+        return CGRectZero;
+    }
+}
+
 @end
 
 
@@ -410,6 +432,15 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     dragPoint.cropAreaCenter = cropAreaView.center;
 }
 
+- (void)setCropAreaForViews:(CGRect)cropArea
+{
+    cropAreaView.frame = cropArea;
+    // Create offset to make frame within imageView
+    cropArea.origin.y = cropArea.origin.y - imageFrameInView.origin.y;
+    cropArea.origin.x = cropArea.origin.x - imageFrameInView.origin.x;
+    [self.shadeView setCropArea:cropArea];
+}
+
 - (void)beginCropBoxTransformForPoint:(CGPoint)location atView:(UIView*)view
 {
     if (view == topLeftPoint) {
@@ -425,12 +456,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     }
     
     CGRect cropArea = [self cropAreaFromControlPoints];
-    cropAreaView.frame = cropArea;
-    
-    // Create offset to make frame within imageView
-    cropArea.origin.y = cropArea.origin.y - imageFrameInView.origin.y;
-    cropArea.origin.x = cropArea.origin.x - imageFrameInView.origin.x;
-    [self.shadeView setCropArea:cropArea];
+    [self setCropAreaForViews:cropArea];
 }
 
 - (CGSize)deriveDisplacementFromDragLocation:(CGPoint)dragLocation draggedPoint:(CGPoint)draggedPoint oppositePoint:(CGPoint)oppositePoint {
@@ -685,28 +711,29 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 }
 
 - (void)setCropAreaInImage:(CGRect)_cropAreaInImage {
-    CGRect r = CGRectMake(_cropAreaInImage.origin.x + imageFrameInView.origin.x, 
-                          _cropAreaInImage.origin.y + imageFrameInView.origin.y, 
-                          _cropAreaInImage.size.width, 
-                          _cropAreaInImage.size.height);
+    CGRect r = CGRectMake(_cropAreaInImage.origin.x/self.imageScale + imageFrameInView.origin.x,
+                          _cropAreaInImage.origin.y/self.imageScale + imageFrameInView.origin.y,
+                          _cropAreaInImage.size.width/self.imageScale,
+                          _cropAreaInImage.size.height/self.imageScale);
     [self setCropAreaInView:r];
 }
 
 - (CGRect)cropAreaInView {
-    CGRect area = [self cropAreaFromControlPoints];
-    return area;
+    CGRect cropArea = [self cropAreaFromControlPoints];
+    return cropArea;
 }
 
-- (void)setCropAreaInView:(CGRect)area {
-    CGPoint topLeft = area.origin;
-    CGPoint bottomLeft = CGPointMake(topLeft.x, topLeft.y + area.size.height);
-    CGPoint bottomRight = CGPointMake(bottomLeft.x + area.size.width, bottomLeft.y);
-    CGPoint topRight = CGPointMake(topLeft.x + area.size.width, topLeft.y);
+- (void)setCropAreaInView:(CGRect)cropArea {
+    CGPoint topLeft = cropArea.origin;
+    CGPoint bottomLeft = CGPointMake(cropArea.origin.x, cropArea.origin.y + cropArea.size.height);
+    CGPoint bottomRight = CGPointMake(cropArea.origin.x + cropArea.size.width, cropArea.origin.y + cropArea.size.height);
+    CGPoint topRight = CGPointMake(cropArea.origin.x + cropArea.size.width, cropArea.origin.y);
     topLeftPoint.center = topLeft;
     bottomLeftPoint.center = bottomLeft;
     bottomRightPoint.center = bottomRight;
     topRightPoint.center = topRight;
-    self.shadeView.cropArea = area;
+    
+    [self setCropAreaForViews:cropArea];
     [self setNeedsDisplay];
 }
 
