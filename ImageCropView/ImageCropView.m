@@ -235,6 +235,8 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     
     //the image
     imageView = [[UIImageView alloc] initWithFrame:subviewFrame];
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+
 
     //control points
     controlPointSize = DEFAULT_CONTROL_POINT_SIZE;
