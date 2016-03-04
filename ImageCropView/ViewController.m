@@ -63,14 +63,17 @@
         ImageCropViewController *controller = [[ImageCropViewController alloc] initWithImage:image];
         controller.delegate = self;
         controller.blurredBackground = YES;
+        // set the cropped area
+        // controller.cropArea = CGRectMake(0, 0, 100, 200);
         [[self navigationController] pushViewController:controller animated:YES];
     }
 }
 
-- (void)ImageCropViewController:(ImageCropViewController *)controller didFinishCroppingImage:(UIImage *)croppedImage{
-   image = croppedImage;
-   imageView.image = croppedImage;
-   [[self navigationController] popViewControllerAnimated:YES];
+- (void)ImageCropViewControllerSuccess:(ImageCropViewController *)controller didFinishCroppingImage:(UIImage *)croppedImage{
+    image = croppedImage;
+    imageView.image = croppedImage;
+    CGRect cropArea = controller.cropArea;
+    [[self navigationController] popViewControllerAnimated:YES];
 }
 
 - (void)ImageCropViewControllerDidCancel:(ImageCropViewController *)controller{

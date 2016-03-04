@@ -39,7 +39,7 @@ typedef struct {
     CGPoint bottomLeftCenter;
     CGPoint bottomRightCenter;
     CGPoint topRightCenter;
-    CGPoint clearAreaCenter;
+    CGPoint cropAreaCenter;
 } DragPoint;
 
 // Used when working with multiple dragPoints
@@ -102,6 +102,10 @@ typedef struct {
 @property (nonatomic) BOOL blurredBackground;
 @property (nonatomic, retain) UIImage* image;
 @property (nonatomic, retain) ImageCropView* cropView;
+/**
+ *  the crop area in the image
+ */
+@property (nonatomic) CGRect cropArea;
 
 - (id)initWithImage:(UIImage*)image;
 - (IBAction)cancel:(id)sender;

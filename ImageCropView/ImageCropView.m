@@ -11,9 +11,12 @@ static bool const square = NO;
 float IMAGE_MIN_HEIGHT = 400;
 float IMAGE_MIN_WIDTH = 400;
 
+@interface ImageCropViewController(){
+    CGRect _cropArea;
+}
+
+@end
 #pragma mark ImageCropViewController implementation
-
-
 @implementation ImageCropViewController
 
 @synthesize delegate;
@@ -57,6 +60,9 @@ float IMAGE_MIN_WIDTH = 400;
         self.view = contentView;
         [contentView addSubview:cropView];
         [cropView setImage:self.image];
+        if (_cropArea.size.width > 0) {
+            self.cropView.cropAreaInImage = _cropArea;
+        }
     }
 }
 
@@ -86,6 +92,22 @@ float IMAGE_MIN_WIDTH = 400;
     }
     
 }
+
+- (void)setCropArea:(CGRect)cropArea {
+    _cropArea = cropArea;
+    if (self.cropView) {
+        self.cropView.cropAreaInImage = _cropArea;
+    }
+}
+
+- (CGRect)cropArea {
+    if (self.cropView) {
+        return self.cropView.cropAreaInImage;
+    } else {
+        return CGRectZero;
+    }
+}
+
 @end
 
 
@@ -146,8 +168,8 @@ float IMAGE_MIN_WIDTH = 400;
     return [UIColor colorWithRed:cropBorderRed green:cropBorderGreen blue:cropBorderBlue alpha:cropBorderAlpha];
 }
 
-- (void)setCropArea:(CGRect)_clearArea {
-    cropArea = _clearArea;
+- (void)setCropArea:(CGRect)_cropArea {
+    cropArea = _cropArea;
     [self setNeedsDisplay];
 }
 
@@ -238,24 +260,24 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 
     //control points
     controlPointSize = DEFAULT_CONTROL_POINT_SIZE;
-    int initialClearAreaSize = self.frame.size.width / 5;
+    int initialCropAreaSize = self.frame.size.width / 5;
     CGPoint centerInView = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
-    topLeftPoint = [self createControlPointAt:SquareCGRectAtCenter(centerInView.x - initialClearAreaSize,
-                                                                   centerInView.y - initialClearAreaSize, 
+    topLeftPoint = [self createControlPointAt:SquareCGRectAtCenter(centerInView.x - initialCropAreaSize,
+                                                                   centerInView.y - initialCropAreaSize, 
                                                                    controlPointSize)];
     
-    bottomLeftPoint = [self createControlPointAt:SquareCGRectAtCenter(centerInView.x - initialClearAreaSize, 
-                                                                      centerInView.y + initialClearAreaSize, 
+    bottomLeftPoint = [self createControlPointAt:SquareCGRectAtCenter(centerInView.x - initialCropAreaSize, 
+                                                                      centerInView.y + initialCropAreaSize, 
                                                                       controlPointSize)];
     
-    bottomRightPoint = [self createControlPointAt:SquareCGRectAtCenter(centerInView.x + initialClearAreaSize, 
-                                                                       centerInView.y + initialClearAreaSize, controlPointSize) ];
+    bottomRightPoint = [self createControlPointAt:SquareCGRectAtCenter(centerInView.x + initialCropAreaSize, 
+                                                                       centerInView.y + initialCropAreaSize, controlPointSize) ];
     
-    topRightPoint = [self createControlPointAt:SquareCGRectAtCenter(centerInView.x + initialClearAreaSize, 
-                                                                    centerInView.y - initialClearAreaSize, controlPointSize)];
+    topRightPoint = [self createControlPointAt:SquareCGRectAtCenter(centerInView.x + initialCropAreaSize, 
+                                                                    centerInView.y - initialCropAreaSize, controlPointSize)];
     
     //the "hole"
-    CGRect cropArea = [self clearAreaFromControlPoints];
+    CGRect cropArea = [self cropAreaFromControlPoints];
     cropAreaView = [[UIView alloc] initWithFrame:cropArea];
     cropAreaView.opaque = NO;
     cropAreaView.backgroundColor = [UIColor clearColor];
@@ -288,7 +310,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     return point;
 }
 
-- (CGRect)clearAreaFromControlPoints {
+- (CGRect)cropAreaFromControlPoints {
     CGFloat width = topRightPoint.center.x - topLeftPoint.center.x;
     CGFloat height = bottomRightPoint.center.y - topRightPoint.center.y;
     CGRect hole = CGRectMake(topLeftPoint.center.x, topLeftPoint.center.y, width, height);
@@ -363,7 +385,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
             multiDragPoint.optionalPoint.bottomLeftCenter = bottomLeftPoint.center;
             multiDragPoint.optionalPoint.bottomRightCenter = bottomRightPoint.center;
             multiDragPoint.optionalPoint.topRightCenter = topRightPoint.center;
-            multiDragPoint.optionalPoint.clearAreaCenter = cropAreaView.center;
+            multiDragPoint.optionalPoint.cropAreaCenter = cropAreaView.center;
         }
     } else {
         [self beginCropBoxTransformForPoint:[recognizer locationInView:self] atView:dragViewOne];
@@ -392,7 +414,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     multiDragPoint.mainPoint.bottomLeftCenter = bottomLeftPoint.center;
     multiDragPoint.mainPoint.bottomRightCenter = bottomRightPoint.center;
     multiDragPoint.mainPoint.topRightCenter = topRightPoint.center;
-    multiDragPoint.mainPoint.clearAreaCenter = cropAreaView.center;
+    multiDragPoint.mainPoint.cropAreaCenter = cropAreaView.center;
 }
 
 /**
@@ -407,7 +429,16 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     dragPoint.bottomLeftCenter = bottomLeftPoint.center;
     dragPoint.bottomRightCenter = bottomRightPoint.center;
     dragPoint.topRightCenter = topRightPoint.center;
-    dragPoint.clearAreaCenter = cropAreaView.center;
+    dragPoint.cropAreaCenter = cropAreaView.center;
+}
+
+- (void)setCropAreaForViews:(CGRect)cropArea
+{
+    cropAreaView.frame = cropArea;
+    // Create offset to make frame within imageView
+    cropArea.origin.y = cropArea.origin.y - imageFrameInView.origin.y;
+    cropArea.origin.x = cropArea.origin.x - imageFrameInView.origin.x;
+    [self.shadeView setCropArea:cropArea];
 }
 
 - (void)beginCropBoxTransformForPoint:(CGPoint)location atView:(UIView*)view
@@ -421,16 +452,11 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     } else if (view == topRightPoint) {
         [self handleDragTopRight:location];
     } else if (view == cropAreaView) {
-        [self handleDragClearArea:location];
+        [self handleDragCropArea:location];
     }
     
-    CGRect clearArea = [self clearAreaFromControlPoints];
-    cropAreaView.frame = clearArea;
-    
-    // Create offset to make frame within imageView
-    clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
-    clearArea.origin.x = clearArea.origin.x - imageFrameInView.origin.x;
-    [self.shadeView setCropArea:clearArea];
+    CGRect cropArea = [self cropAreaFromControlPoints];
+    [self setCropAreaForViews:cropArea];
 }
 
 - (CGSize)deriveDisplacementFromDragLocation:(CGPoint)dragLocation draggedPoint:(CGPoint)draggedPoint oppositePoint:(CGPoint)oppositePoint {
@@ -490,7 +516,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     height = height * self.imageScale;
     
     // If the crop area is too small, set the points at the minimum spacing.
-    CGRect cropArea = [self clearAreaFromControlPoints];
+    CGRect cropArea = [self cropAreaFromControlPoints];
     if (width >= IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
         topLeft.y = cropArea.origin.y + (((cropArea.size.height * self.imageScale) - IMAGE_MIN_HEIGHT) / self.imageScale);
         topRight.y = topLeft.y;
@@ -519,7 +545,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     height = height * self.imageScale;
     
     // If the crop area is too small, set the points at the minimum spacing.
-    CGRect cropArea = [self clearAreaFromControlPoints];
+    CGRect cropArea = [self cropAreaFromControlPoints];
     if (width >= IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
         bottomLeft.y = cropArea.origin.y + (IMAGE_MIN_HEIGHT / self.imageScale);
         bottomRight.y = bottomLeft.y;
@@ -549,7 +575,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     height = height * self.imageScale;
     
     // If the crop area is too small, set the points at the minimum spacing.
-    CGRect cropArea = [self clearAreaFromControlPoints];
+    CGRect cropArea = [self cropAreaFromControlPoints];
     if (width >= IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
         bottomRight.y = cropArea.origin.y + (IMAGE_MIN_HEIGHT / self.imageScale);
         bottomLeft.y = bottomRight.y;
@@ -579,7 +605,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     height = height * self.imageScale;
     
     // If the crop area is too small, set the points at the minimum spacing.
-    CGRect cropArea = [self clearAreaFromControlPoints];
+    CGRect cropArea = [self cropAreaFromControlPoints];
     if (width >= IMAGE_MIN_WIDTH && height < IMAGE_MIN_HEIGHT) {
         topRight.y = cropArea.origin.y + (((cropArea.size.height * self.imageScale) - IMAGE_MIN_HEIGHT) / self.imageScale);
         topLeft.y = topRight.y;
@@ -596,7 +622,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     [self boundingBoxForTopLeft:topLeft bottomLeft:dragPoint.bottomLeftCenter bottomRight:bottomRight topRight:topRight];
 }
 
-- (void)handleDragClearArea:(CGPoint)dragLocation {
+- (void)handleDragCropArea:(CGPoint)dragLocation {
     CGFloat dX = dragLocation.x - dragPoint.dragStart.x;
     CGFloat dY = dragLocation.y - dragPoint.dragStart.y;
     
@@ -605,40 +631,39 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     CGPoint newBottomRight = CGPointMake(dragPoint.bottomRightCenter.x + dX, dragPoint.bottomRightCenter.y + dY);
     CGPoint newTopRight = CGPointMake(dragPoint.topRightCenter.x + dX, dragPoint.topRightCenter.y + dY);
 
-    CGFloat clearAreaWidth = dragPoint.topRightCenter.x - dragPoint.topLeftCenter.x;
-    CGFloat clearAreaHeight = dragPoint.bottomLeftCenter.y - dragPoint.topLeftCenter.y;
+    CGFloat cropAreaWidth = dragPoint.topRightCenter.x - dragPoint.topLeftCenter.x;
+    CGFloat cropAreaHeight = dragPoint.bottomLeftCenter.y - dragPoint.topLeftCenter.y;
     
-    CGFloat halfControlPointSize = controlPointSize / 2;
-    CGFloat minX = imageFrameInView.origin.x + halfControlPointSize;
-    CGFloat maxX = imageFrameInView.origin.x + imageFrameInView.size.width - halfControlPointSize;
-    CGFloat minY = imageFrameInView.origin.y + halfControlPointSize;
-    CGFloat maxY = imageFrameInView.origin.y + imageFrameInView.size.height - halfControlPointSize;
+    CGFloat minX = imageFrameInView.origin.x;
+    CGFloat maxX = imageFrameInView.origin.x + imageFrameInView.size.width;
+    CGFloat minY = imageFrameInView.origin.y;
+    CGFloat maxY = imageFrameInView.origin.y + imageFrameInView.size.height;
     
     if (newTopLeft.x<minX) {
         newTopLeft.x = minX;
         newBottomLeft.x = minX;
-        newTopRight.x = newTopLeft.x + clearAreaWidth;
+        newTopRight.x = newTopLeft.x + cropAreaWidth;
         newBottomRight.x = newTopRight.x;
     }
     
     if(newTopLeft.y<minY) {
         newTopLeft.y = minY;
         newTopRight.y = minY;
-        newBottomLeft.y = newTopLeft.y + clearAreaHeight;
+        newBottomLeft.y = newTopLeft.y + cropAreaHeight;
         newBottomRight.y = newBottomLeft.y;
     }
     
     if (newBottomRight.x>maxX) {        
         newBottomRight.x = maxX;
         newTopRight.x = maxX;
-        newTopLeft.x = newBottomRight.x - clearAreaWidth;
+        newTopLeft.x = newBottomRight.x - cropAreaWidth;
         newBottomLeft.x = newTopLeft.x;
     }
     
     if (newBottomRight.y>maxY) {
         newBottomRight.y = maxY;
         newBottomLeft.y = maxY;
-        newTopRight.y = newBottomRight.y - clearAreaHeight;
+        newTopRight.y = newBottomRight.y - cropAreaHeight;
         newTopLeft.y = newTopRight.y;
     }
     topLeftPoint.center = newTopLeft;
@@ -676,37 +701,38 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
 }
 
 - (CGRect)cropAreaInImage {
-    CGRect _clearArea = self.cropAreaInView;
-    CGRect r = CGRectMake((int)((_clearArea.origin.x - imageFrameInView.origin.x) * self.imageScale),
-                          (int)((_clearArea.origin.y - imageFrameInView.origin.y) * self.imageScale),
-                          (int)(_clearArea.size.width * self.imageScale),
-                          (int)(_clearArea.size.height * self.imageScale));
+    CGRect _cropArea = self.cropAreaInView;
+    CGRect r = CGRectMake((int)((_cropArea.origin.x - imageFrameInView.origin.x) * self.imageScale),
+                          (int)((_cropArea.origin.y - imageFrameInView.origin.y) * self.imageScale),
+                          (int)(_cropArea.size.width * self.imageScale),
+                          (int)(_cropArea.size.height * self.imageScale));
     return r;
 }
 
-- (void)setCropAreaInImage:(CGRect)_clearAreaInImage {
-    CGRect r = CGRectMake(_clearAreaInImage.origin.x + imageFrameInView.origin.x, 
-                          _clearAreaInImage.origin.y + imageFrameInView.origin.y, 
-                          _clearAreaInImage.size.width, 
-                          _clearAreaInImage.size.height);
+- (void)setCropAreaInImage:(CGRect)_cropAreaInImage {
+    CGRect r = CGRectMake(_cropAreaInImage.origin.x/self.imageScale + imageFrameInView.origin.x,
+                          _cropAreaInImage.origin.y/self.imageScale + imageFrameInView.origin.y,
+                          _cropAreaInImage.size.width/self.imageScale,
+                          _cropAreaInImage.size.height/self.imageScale);
     [self setCropAreaInView:r];
 }
 
 - (CGRect)cropAreaInView {
-    CGRect area = [self clearAreaFromControlPoints];
-    return area;
+    CGRect cropArea = [self cropAreaFromControlPoints];
+    return cropArea;
 }
 
-- (void)setCropAreaInView:(CGRect)area {
-    CGPoint topLeft = area.origin;
-    CGPoint bottomLeft = CGPointMake(topLeft.x, topLeft.y + area.size.height);
-    CGPoint bottomRight = CGPointMake(bottomLeft.x + area.size.width, bottomLeft.y);
-    CGPoint topRight = CGPointMake(topLeft.x + area.size.width, topLeft.y);
+- (void)setCropAreaInView:(CGRect)cropArea {
+    CGPoint topLeft = cropArea.origin;
+    CGPoint bottomLeft = CGPointMake(cropArea.origin.x, cropArea.origin.y + cropArea.size.height);
+    CGPoint bottomRight = CGPointMake(cropArea.origin.x + cropArea.size.width, cropArea.origin.y + cropArea.size.height);
+    CGPoint topRight = CGPointMake(cropArea.origin.x + cropArea.size.width, cropArea.origin.y);
     topLeftPoint.center = topLeft;
     bottomLeftPoint.center = bottomLeft;
     bottomRightPoint.center = bottomRight;
     topRightPoint.center = topRight;
-    self.shadeView.cropArea = area;
+    
+    [self setCropAreaForViews:cropArea];
     [self setNeedsDisplay];
 }
 
@@ -763,13 +789,13 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     }
     [self.shadeView.blurredImageView setImage:blur];
     
-    //Special fix. If scaledImageWidth or scaledImageHeight < clearArea.width of clearArea.Height.
+    //Special fix. If scaledImageWidth or scaledImageHeight < cropArea.width of cropArea.Height.
     [self boundingBoxForTopLeft:topLeftPoint.center bottomLeft:bottomLeftPoint.center bottomRight:bottomRightPoint.center topRight:topRightPoint.center];
-    CGRect clearArea = [self clearAreaFromControlPoints];
-    cropAreaView.frame = clearArea;
-    clearArea.origin.y = clearArea.origin.y - imageFrameInView.origin.y;
-    clearArea.origin.x = clearArea.origin.x - imageFrameInView.origin.x;
-    [self.shadeView setCropArea:clearArea];
+    CGRect cropArea = [self cropAreaFromControlPoints];
+    cropAreaView.frame = cropArea;
+    cropArea.origin.y = cropArea.origin.y - imageFrameInView.origin.y;
+    cropArea.origin.x = cropArea.origin.x - imageFrameInView.origin.x;
+    [self.shadeView setCropArea:cropArea];
     
 }
 
