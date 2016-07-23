@@ -287,7 +287,7 @@ CGRect SquareCGRectAtCenter(CGFloat centerX, CGFloat centerY, CGFloat size) {
     dragRecognizer.view.multipleTouchEnabled = YES;
     dragRecognizer.minimumNumberOfTouches = 1;
     dragRecognizer.maximumNumberOfTouches = 2;
-    [self.viewForBaselineLayout addGestureRecognizer:dragRecognizer];
+    [self.viewForFirstBaselineLayout addGestureRecognizer:dragRecognizer];
     
     [self addSubview:imageView];
     [self addSubview:self.shadeView];
